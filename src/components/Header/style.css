@@ -1,0 +1,16 @@
+.header {
+    min-height: 100px;
+    background: #c55e5e;
+    position: relative;
+  }
+  
+  .h1 {
+    position: absolute;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    top: 20px;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    padding: 3px;
+    background: #B8B8B8;
+  }
