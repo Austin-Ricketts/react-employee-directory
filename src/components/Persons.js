@@ -3,10 +3,10 @@ import API from "../utils/API";
 
 export default class Persons extends Component {
   state = {
-    search: " ",
+    search: "",
     users: [],
     filtered: [],
-    alphasort: []
+    alphasort: ''
   };
 
   componentDidMount() {
@@ -14,7 +14,8 @@ export default class Persons extends Component {
       .then(res => 
         {
           this.setState({ users: res.data.results })
-          console.log(this.state.users);
+          this.setState({ filtered: res.data.results })
+          console.log(this.state.filtered);
         })
         
 
@@ -29,29 +30,25 @@ export default class Persons extends Component {
   handleSubmit = event => {
     event.preventDefault();
     const result = this.state.users.filter(user => { 
-      console.log(user);
-      let name = user.name.first;
-      return name.indexOf(this.state.search.toLowerCase()) !== -1})
-    console.log(this.state.users);
-    console.log(result);
-    console.log(this.state.search);
-        this.setState({filtered: result});
-        // console.log(res.data.results);
-        // console.log(this.state.search);
-        // console.log(this.state.filtered);
-      
-  };
+      let name = user.name.first.toLowerCase()
+      let search_value = this.state.search.toLowerCase()
+      console.log("Does the name: " + user.name.first + `include a ` + search_value + " : " + name.includes(search_value));
+      return name.includes(this.state.search.toLowerCase())
+  })
+  console.log(result)
+  this.setState({filtered: result}); 
+}
 
   handleSortAlphabet = event => {
     event.preventDefault();
-    API.getPerson()
-    .then(res => {
-      let abc = [];
-      abc.push(res.data.results.name);
-      console.log(abc);
-      this.setState({users: abc});
+    let sortArray = this.state.filtered.sort(function(a, b){
+      var x = a.name.last.toLowerCase();
+      var y = b.name.last.toLowerCase();
+      if (x < y) {return -1;}
+      if (x > y) {return 1;}
+      return 0;
     });
-      
+      this.setState({filtered: sortArray});
   }
 
   render() {
@@ -79,26 +76,6 @@ export default class Persons extends Component {
               <th>DOB</th>
             </tr>
           </thead>
-          <tbody>
-                {this.state.users.map(({ name, login, phone, email, dob }) => {
-                  return (
-                    <tr key={login.uuid}>
-                      <td data-th="Name" className="name-cell align-middle">
-                            {name.first} {name.last}
-                      </td>
-                      <td data-th="Phone" className="name-cell align-middle">
-                            {phone}
-                      </td>
-                      <td data-th="Email" className="name-cell align-middle">
-                            {email}
-                      </td>
-                      <td data-th="DOB" className="name-cell align-middle">
-                            {dob.date}
-                      </td>
-                    </tr>
-                );
-              })}
-          </tbody>
           <tbody>
                 {this.state.filtered.map(({ name, login, phone, email, dob }) => {
                         return (
